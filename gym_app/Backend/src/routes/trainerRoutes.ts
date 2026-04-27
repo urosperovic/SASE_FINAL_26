@@ -83,12 +83,16 @@ router.post('/unpick', async (req: Request, res: Response) => {
 // ─── Admin routes ─────────────────────────────────────────
 const authMiddleware = (req: Request, res: Response, next: Function) => {
     const token = req.headers.authorization?.split(' ')[1];
+    console.log('AUTH HEADER:', req.headers.authorization); // ← add this
+    console.log('TOKEN:', token);     
     if (!token) return res.status(401).json({ message: 'No token provided' });
     try {
         const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET) as { userId: string, role: string };
+        console.log('Decoded token:', decoded);
         req['user'] = decoded;
         next();
-    } catch {
+    } catch(err) {
+        console.log('JWT ERROR:', err); // ← add this
         return res.status(401).json({ message: 'Invalid token' });
     }
 };

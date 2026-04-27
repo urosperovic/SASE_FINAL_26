@@ -39,6 +39,11 @@ const router = createRouter({
           next('/login');
         }
       }
+    },
+    {
+      path: '/exercises',
+      name: 'exercises',
+    component: () => import('../views/ExercisesView.vue')
     }
   ]
 })

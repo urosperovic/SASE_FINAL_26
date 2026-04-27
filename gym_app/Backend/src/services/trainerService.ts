@@ -150,15 +150,42 @@ export class TrainerService {
 }
 
   static async deleteTrainer(id: number): Promise<void> {
-      try {
-          const trainerRepository = getRepository(Trainer);
-          const trainer = await trainerRepository.findOne({ where: { id } });
+    try {
+        const trainerRepository = getRepository(Trainer);
+        const userTrainerRepository = getRepository(User_Trainer);
+        const timeSlotRepository = getRepository(TimeSlot);
+        console.log('Deleting trainer with ID:', id);
+
+        const trainer = await trainerRepository.findOne({ 
+            where: { id }, 
+            relations: ['user_trainers', 'timeSlots'] 
+        });
+        console.log('Found trainer:', trainer); // ← add this
         if (!trainer) throw new Error('Trainer not found');
 
-        await trainerRepository.remove(trainer);
+        // Delete related User_Trainer records first
+        if (trainer.user_trainers?.length > 0) {
+            await userTrainerRepository.remove(trainer.user_trainers);
+            console.log(`Deleted ${trainer.user_trainers.length} user-trainer relationships for trainer ID ${id}`);
+        }
+
+        // Delete related TimeSlots
+        if (trainer.timeSlots?.length > 0) {
+            await timeSlotRepository.remove(trainer.timeSlots);
+            console.log(`Deleted ${trainer.timeSlots.length} time slots for trainer ID ${id}`);
+        }
+
+        // Now safe to delete trainer
+        await trainerRepository
+            .createQueryBuilder()
+            .delete()
+            .from(Trainer)
+            .where("id = :id", { id })
+            .execute();
+            console.log(`Trainer deleted successfully`);
     } catch (error) {
         throw new Error(`Error in deleteTrainer: ${error.message}`);
     }
-  }
+}
     
 }

@@ -36,6 +36,9 @@ const isAuthenticated = () => SessionManager.hasAuth();
           <li class="nav-item" v-if="isAuthenticated()">
             <button class="btn btn-outline-success" @click="$router.push('/selected')">My Trainers</button>
           </li>
+          <li class="nav-item" v-if="isAuthenticated">
+            <button class="btn btn-outline-info me-2" @click="$router.push('/exercises')">Exercise alone</button>
+          </li>
         </ul>
         
       </div>

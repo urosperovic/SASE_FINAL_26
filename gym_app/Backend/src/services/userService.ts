@@ -84,13 +84,32 @@ export class UserService {
 
     // ← new method
     static async deleteUser(id: number): Promise<void> {
-        try {
-            const userRepository = getRepository(User);
-            const user = await userRepository.findOne({ where: { id } });
-            if (!user) throw new Error('User not found');
-            await userRepository.remove(user);
-        } catch (error) {
-            throw new Error(`Error in deleteUser: ${error.message}`);
+    try {
+        const userRepository = getRepository(User);
+        const userTrainerRepository = getRepository(User_Trainer);
+
+        const user = await userRepository.findOne({ 
+            where: { id },
+            relations: ['user_trainers']
+        });
+        if (!user) throw new Error('User not found');
+
+        // Delete related User_Trainer records first
+        if (user.user_trainers?.length > 0) {
+            await userTrainerRepository.remove(user.user_trainers);
         }
+
+        // Now safe to delete user
+        await userRepository
+            .createQueryBuilder()
+            .delete()
+            .from(User)
+            .where("id = :id", { id })
+            .execute();
+
+    } catch (error) {
+        console.error('FULL DELETE USER ERROR:', error);
+        throw new Error(`Error in deleteUser: ${error.message}`);
     }
 }
+}   

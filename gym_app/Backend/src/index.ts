@@ -11,6 +11,7 @@ import { User_Trainer } from './entities/user_trainer';
 import { TimeSlot } from './entities/time_slot';
 import https from "https";
 import fs from "fs";
+import exerciseRoutes from './routes/exerciseRoutes';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ createConnection({
 
     app.use('/api/users', userRoutes);
     app.use('/api/trainer', trainerRoutes);
+    app.use('/api/exercises', exerciseRoutes);
 
     https.createServer(sslOptions, app).listen(port, () => {
         console.log(`HTTPS Server is running on port ${port}`);
