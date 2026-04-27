@@ -71,6 +71,9 @@
           <label class="form-label">Time Slots <small class="text-muted">(one per line)</small></label>
           <textarea class="form-control" v-model="newTrainer.timeSlotsRaw" rows="3" placeholder="e.g. Monday 08:00&#10;Tuesday 10:00"></textarea>
         </div>
+        <div class="mb-2">
+          <textarea class="form-control" v-model="editingTrainer.bio" placeholder="Bio" rows="3"></textarea>
+        </div>
         <button class="btn btn-success" @click="addTrainer" :disabled="adding">
           {{ adding ? 'Adding...' : 'Add Trainer' }}
         </button>
@@ -118,6 +121,9 @@
         <div class="mb-2">
           <label class="form-label">Time Slots <small class="text-muted">(one per line)</small></label>
           <textarea class="form-control" v-model="editingTrainerSlotsRaw" rows="3"></textarea>
+        </div>
+        <div class="mb-2">
+          <textarea class="form-control" v-model="editingTrainer.bio" placeholder="Bio" rows="3"></textarea>
         </div>
         <button class="btn btn-primary me-2" @click="saveTrainer">Save</button>
         <button class="btn btn-secondary" @click="editingTrainer = null">Cancel</button>

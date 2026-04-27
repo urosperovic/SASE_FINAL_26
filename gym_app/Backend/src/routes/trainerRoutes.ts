@@ -2,6 +2,7 @@ import express, {Router, Request, Response} from 'express';
 import { TrainerService } from '../services/trainerService';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/userService';
+import { UserRole } from '../entities/user';
 
 const router = Router();
 
@@ -98,7 +99,8 @@ const authMiddleware = (req: Request, res: Response, next: Function) => {
 };
 
 const adminMiddleware = (req: Request, res: Response, next: Function) => {
-    if (req['user']?.role !== 'admin') {
+    const user = req['user'] as { userId: string, role: string };
+    if (user?.role !== UserRole.ADMIN) {
         return res.status(403).json({ message: 'Admin access required' });
     }
     next();
@@ -106,8 +108,8 @@ const adminMiddleware = (req: Request, res: Response, next: Function) => {
 
 router.put('/admin/:id', authMiddleware, adminMiddleware, async (req: Request, res: Response) => {
     try {
-        const { name, email, speciality, timeSlots } = req.body;
-        const trainer = await TrainerService.updateTrainer(parseInt(req.params.id), name, email, speciality, timeSlots);
+        const { name, email, speciality, bio, timeSlots } = req.body;
+        const trainer = await TrainerService.updateTrainer(parseInt(req.params.id), name, email, speciality, bio, timeSlots);
         return res.status(200).json(trainer);
     } catch (error) {
         res.status(500).json({ message: 'Failed to update trainer', error: error.message });

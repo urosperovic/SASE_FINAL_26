@@ -73,6 +73,14 @@ async function signUp() {
             <button type="submit" class="btn btn-primary">Sign Up</button>
           </form>
         </div>
+        <div class="text-center mt-3">
+  <hr />
+  <p class="text-muted mb-2">Or continue with</p>
+  <a href="https://localhost:3000/api/auth/google" class="btn btn-outline-danger w-100">
+    <img src="https://developers.google.com/identity/images/g-logo.png" width="20" class="me-2" />
+    Sign in with Google
+  </a>
+</div>
       </div>
     </div>
   </div>

@@ -125,6 +125,7 @@ export class TrainerService {
     name?: string,
     email?: string,
     speciality?: string,
+    bio?: string,  
     timeSlots?: string[]
 ): Promise<Trainer> {
     try {
@@ -135,6 +136,7 @@ export class TrainerService {
         if (name) trainer.name = name;
         if (email) trainer.email = email;
         if (speciality) trainer.speciality = speciality;
+        if (bio !== undefined) trainer.bio = bio;  // ← update bio
         if (timeSlots) {
             trainer.timeSlots = timeSlots.map(slot => {
                 const timeSlot = new TimeSlot();

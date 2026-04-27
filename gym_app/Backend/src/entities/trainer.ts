@@ -20,6 +20,9 @@ export class Trainer {
   @Column()
   speciality: string;
 
+  @Column({ type: 'text', nullable: true })
+  bio: string;
+
   @ManyToMany(() => User, (user) => user.trainer)
   user: User[];
 

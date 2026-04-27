@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { SessionManager } from '@/utils/session.manager'
 
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -40,10 +42,16 @@ const router = createRouter({
         }
       }
     },
+    
     {
       path: '/exercises',
       name: 'exercises',
     component: () => import('../views/ExercisesView.vue')
+    },
+    {
+      path: '/auth/callback',
+      name: 'AuthCallback',
+      component: () => import('../views/AuthCallback.vue')
     }
   ]
 })
