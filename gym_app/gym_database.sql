@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 27, 2026 at 07:38 PM
+-- Generation Time: Apr 28, 2026 at 01:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -38,9 +38,9 @@ CREATE TABLE `time_slot` (
 --
 
 INSERT INTO `time_slot` (`id`, `slot`, `trainerId`) VALUES
-(112, 'Tuesday 7:00 AM', 42),
-(113, 'Thursday 5:00 PM', 42),
-(114, 'Saturday 9:00 AM', 42),
+(112, 'Tuesday 7:00 AM', NULL),
+(113, 'Thursday 5:00 PM', NULL),
+(114, 'Saturday 9:00 AM', NULL),
 (115, 'Monday 9:00 AM', 43),
 (116, 'Wednesday 4:00 PM', 43),
 (117, 'Friday 11:00 AM', 43),
@@ -68,9 +68,9 @@ INSERT INTO `time_slot` (`id`, `slot`, `trainerId`) VALUES
 (139, 'Friday 9:00 AM', 51),
 (140, 'Sunday 7:00 PM', 51),
 (141, 'Wednesday 11:00 AM', 51),
-(142, 'Monday 7:00 AM', 42),
-(143, 'Tuesday 6:00 PM', 42),
-(144, 'Friday 8:00 AM', 42),
+(142, 'Monday 7:00 AM', NULL),
+(143, 'Tuesday 6:00 PM', NULL),
+(144, 'Friday 8:00 AM', NULL),
 (145, 'Monday 11:00 AM', 43),
 (146, 'Thursday 9:00 AM', 43),
 (147, 'Saturday 5:00 PM', 43),
@@ -96,7 +96,50 @@ INSERT INTO `time_slot` (`id`, `slot`, `trainerId`) VALUES
 (167, 'Thursday 9:00 PM', 50),
 (168, 'Saturday 9:00 PM', 50),
 (169, 'Wednesday 5:00 PM', 51),
-(170, 'Friday 8:00 PM', 51);
+(170, 'Friday 8:00 PM', 51),
+(171, '[object Object]', NULL),
+(172, '[object Object]', NULL),
+(173, '[object Object]', NULL),
+(174, '[object Object]', NULL),
+(175, '[object Object]', NULL),
+(176, '[object Object]', NULL),
+(177, '[object Object]', NULL),
+(178, '[object Object]', NULL),
+(179, '[object Object]', NULL),
+(180, '[object Object]', NULL),
+(181, '[object Object]', NULL),
+(182, '[object Object]', NULL),
+(184, 'Monday 3 PM', 500),
+(185, 'Monday 11:00 AM', NULL),
+(186, 'Wednesday 14:00 PM', NULL),
+(187, 'Friday 12:00 AM', NULL),
+(188, 'Monday 10:00 AM', NULL),
+(189, 'Thursday 9:00 AM', NULL),
+(190, 'Saturday 5:00 PM', NULL),
+(191, 'Monday 11:00 AM', NULL),
+(192, 'Wednesday 14:00 PM', NULL),
+(193, 'Friday 12:00 AM', NULL),
+(194, 'Monday 10:00 AM', NULL),
+(195, 'Thursday 9:00 AM', NULL),
+(196, 'Saturday 5:00 PM', NULL),
+(197, 'Monday 11:00 AM', NULL),
+(198, 'Wednesday 14:00 PM', NULL),
+(199, 'Friday 12:00 AM', NULL),
+(200, 'Monday 10:00 AM', NULL),
+(201, 'Thursday 9:00 AM', NULL),
+(202, 'Saturday 5:00 PM', NULL),
+(203, 'Monday 11:00 AM', NULL),
+(204, 'Wednesday 14:00 PM', NULL),
+(205, 'Friday 12:00 AM', NULL),
+(206, 'Monday 10:00 AM', NULL),
+(207, 'Thursday 9:00 AM', NULL),
+(208, 'Saturday 5:00 PM', NULL),
+(209, 'Monday 11:00 AM', 42),
+(210, 'Wednesday 14:00 PM', 42),
+(211, 'Friday 12:00 AM', 42),
+(212, 'Monday 10:00 AM', 42),
+(213, 'Thursday 9:00 AM', 42),
+(214, 'Saturday 5:00 PM', 42);
 
 -- --------------------------------------------------------
 
@@ -109,24 +152,28 @@ CREATE TABLE `trainer` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `speciality` varchar(255) NOT NULL
+  `speciality` varchar(255) NOT NULL,
+  `bio` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `trainer`
 --
 
-INSERT INTO `trainer` (`id`, `name`, `email`, `password`, `speciality`) VALUES
-(42, 'Brad Schoenfeld', 'vin1', '$2b$10$0za2Oza/gniQ./E9fX0YeOxoUD1hToOIYHqdpLh31yhPIOO.o9WVK', 'Pilates'),
-(43, 'Matt Roberts', 'vin2', '$2b$10$xaXFUlTbfMceCuKk.jwVdehESBWhL1lW2Zm7GcScFPZ.EktOuMFqy', 'Body-building'),
-(44, 'Louise Parker', 'vin3', '$2b$10$O.YSVNw10UA4.orsdnVi.uw1/GTOp7Ncn4pYHn.SR5dcR2lbc27je', 'Body-building'),
-(45, 'Shaun Stafford', 'vin4', '$2b$10$zApYPUBNvS8aOqMAvhXxXuFKmX5HGQnDx2Dhsz8lDTNGLnxRR44kK', 'Body-building'),
-(46, 'Scott Laidler', 'vin5', '$2b$10$brcku7R6Bi41FzGURAjT2Oqwo1NZRqX1SCCySBXm0SUpwBNMU0oqi', 'Supercar'),
-(47, 'Emma Chan', 'vin7', '$2b$10$sS1.r77KUGrNZHhD0EviwOzr3CuUYis7CgOZR6veWWpaapRgSAqoC', 'Pilates'),
-(48, 'CSS Fitness', 'vin8', '$2b$10$zuFkgRwvZQ.wv2LX/iPDL.LKPah70FgINC0GdMAIwVwgSApYegEt2', 'Cardio'),
-(49, 'Leading Edge NY', 'vin9', '$2b$10$gVPvCLr1dWuMPVgBJnqsW.Q7Dilf.XbYeeG5Im8gXdVju/oaHWNoC', 'Cardio'),
-(50, 'Recharged Personal Training', 'vin10', '$2b$10$BqJsg1HPXrnxf/Xnt.XpIeL2kcCePGgeYI/cVDuYQkrSB5iJeN7vK', 'Cardio'),
-(51, 'Benjamin Stone', 'vin12', '$2b$10$ZKITZWlZkvKl2xDwD/KJuu635F6/G3ArG1xWxnGrsd0AWmnwMhwPi', 'Body-building');
+INSERT INTO `trainer` (`id`, `name`, `email`, `password`, `speciality`, `bio`) VALUES
+(42, 'Brad Schoenfeld', 'brad.schoenfeld@gymapp.com', '$2b$10$0za2Oza/gniQ./E9fX0YeOxoUD1hToOIYHqdpLh31yhPIOO.o9WVK', 'Pilates', 'World-renowned fitness researcher and Pilates expert with over 20 years of experience. Author of multiple bestselling fitness books and professor of exercise science.'),
+(43, 'Matt Roberts', 'matt.roberts@gymapp.com', '$2b$10$xaXFUlTbfMceCuKk.jwVdehESBWhL1lW2Zm7GcScFPZ.EktOuMFqy', 'Body-building', 'Celebrity personal trainer based in London, known for transforming clients through elite bodybuilding programs. Former trainer to top-tier athletes and TV personalities.'),
+(44, 'Louise Parker', 'louise.parker@gymapp.com', '$2b$10$O.YSVNw10UA4.orsdnVi.uw1/GTOp7Ncn4pYHn.SR5dcR2lbc27je', 'Body-building', 'Renowned body transformation coach with a holistic approach to bodybuilding. Specializes in sustainable physique change through lifestyle, nutrition and strength training.'),
+(45, 'Shaun Stafford', 'shaun.stafford@gymapp.com', '$2b$10$zApYPUBNvS8aOqMAvhXxXuFKmX5HGQnDx2Dhsz8lDTNGLnxRR44kK', 'Body-building', 'Two-time WBFF World Fitness Champion and elite bodybuilding coach. Passionate about helping clients unlock their athletic potential through structured strength programs.'),
+(46, 'Scott Laidler', 'scott.laidler@gymapp.com', '$2b$10$brcku7R6Bi41FzGURAjT2Oqwo1NZRqX1SCCySBXm0SUpwBNMU0oqi', 'Supercar', 'London-based personal trainer specializing in functional fitness and body conditioning. Has worked with actors, executives and professional athletes across Europe.'),
+(47, 'Emma Chan', 'emma.chan@gymapp.com', '$2b$10$sS1.r77KUGrNZHhD0EviwOzr3CuUYis7CgOZR6veWWpaapRgSAqoC', 'Pilates', 'Certified Pilates instructor with a background in dance and rehabilitation. Focuses on core strength, flexibility and mindful movement for all fitness levels.'),
+(48, 'CSS Fitness', 'info@cssfitness.com', '$2b$10$zuFkgRwvZQ.wv2LX/iPDL.LKPah70FgINC0GdMAIwVwgSApYegEt2', 'Cardio', 'A results-driven fitness studio offering expert cardio coaching and group training. Known for high-energy sessions that push endurance and torch calories.'),
+(49, 'Leading Edge NY', 'info@leadingedgeny.com', '$2b$10$gVPvCLr1dWuMPVgBJnqsW.Q7Dilf.XbYeeG5Im8gXdVju/oaHWNoC', 'Cardio', 'New York based elite training facility specializing in cardio performance and endurance coaching. Trusted by runners, cyclists and competitive athletes.'),
+(50, 'Recharged Personal Training', 'info@rechargedpt.com', '$2b$10$BqJsg1HPXrnxf/Xnt.XpIeL2kcCePGgeYI/cVDuYQkrSB5iJeN7vK', 'Cardio', 'Specialized cardio and recovery training studio focused on heart health, stamina building and injury prevention. Ideal for clients returning from injury or starting fresh.'),
+(51, 'Benjamin Stone', 'benjamin.stone@gymapp.com', '$2b$10$ZKITZWlZkvKl2xDwD/KJuu635F6/G3ArG1xWxnGrsd0AWmnwMhwPi', 'Body-building', 'Competitive bodybuilder and certified strength coach with a passion for muscle hypertrophy and contest prep. Helps clients build serious size with smart, science-backed programming.'),
+(100, 'TEST', 'vin', '$2b$10$0za2Oza/gniQ./E9fX0YeOxoUD1hToOIYHqdpLh31yhPIOO.o9WVK', 'Pilates', NULL),
+(300, 'TEST', 'vin', '$2b$10$xaXFUlTbfMceCuKk.jwVdehESBWhL1lW2Zm7GcScFPZ.EktOuMFqy', 'Body-building', NULL),
+(500, 'TEST', 'vin', '$2b$10$O.YSVNw10UA4.orsdnVi.uw1/GTOp7Ncn4pYHn.SR5dcR2lbc27je', 'Body-building', NULL);
 
 -- --------------------------------------------------------
 
@@ -160,12 +207,13 @@ INSERT INTO `user` (`id`, `name`, `email`, `password`, `role`) VALUES
 (25, 'Jelena', '1@1', '$2b$10$tfPlw5Ngq3RUntbbMCVnCuozUQyHW2d3sayuCtCUCw1/FLqU4RB6m', 'user'),
 (26, 'Jelena', '1@12', '$2b$10$gTW/EMm./wYjKBFQpPfZOudc1h8GDyYAEJTuSjFWLjKkbKqOOoM16', 'user'),
 (27, 'Jelena', '1@14', '$2b$10$CGD5zqvKjFWQGEqi1vKAa.3sLaoawWa9dY/t5kE39tVNfm37rrUTa', 'user'),
-(28, 'j', '1@144', '$2b$10$KtUiXRfbAvscGfh67sIiM.3.h8w0JvlwkuSeudormOakIiw8tQeDO', 'user'),
 (29, 'j', '3@3', '$2b$10$WAAuGy9I5Ux3fd83TQfB7u2cK1oFldGxGZ8vggNBK/Uwj.e396sHi', 'user'),
 (30, 'uros', '1@5', '$2b$10$PGOS5RLaV6fP5AfFH1IUmuPdsTmhs5K.t5tAIbxJCo2FzLtcTu3K.', 'user'),
 (32, 'uros', 'uros123l@gmail.com', '$2b$10$ZLU3CGXte8jqKCIP2EC51.4hkyjsBPCWrughyoZNtPtHgMWbqFU0q', 'user'),
 (33, 'uros1', 'uros1@gmail.com', '$2b$10$BnyNeZk3OO8eUUX446nYrOfoOaxi1HDjoXE0y6EIhqMpwEuaSleLW', 'user'),
-(35, 'admin', 'admin@gmail.com', '$2b$10$wPun5vPvcN7JhbdySUnmHOl1/xWaAnRoMxacuggD7NxVRk4Jf0vgi', 'admin');
+(35, 'admin', 'admin@gmail.com', '$2b$10$wPun5vPvcN7JhbdySUnmHOl1/xWaAnRoMxacuggD7NxVRk4Jf0vgi', 'admin'),
+(36, 'Uros Perovic', 'urosveliki03@gmail.com', '', 'user'),
+(37, 'uros', 'UROS@gmail.com', '$2b$10$7gj/lK4uaJrq04a8XBypuemeuQOj8wtXvvnO9MMVDr3gvbx63q482', 'user');
 
 -- --------------------------------------------------------
 
@@ -234,19 +282,19 @@ ALTER TABLE `user_trainer`
 -- AUTO_INCREMENT for table `time_slot`
 --
 ALTER TABLE `time_slot`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=215;
 
 --
 -- AUTO_INCREMENT for table `trainer`
 --
 ALTER TABLE `trainer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=502;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- Constraints for dumped tables
