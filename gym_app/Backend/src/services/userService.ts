@@ -27,7 +27,6 @@ export class UserService {
 
         const usersWithTrainers = await Promise.all(users.map(async user => {
             const trainers = await userTrainerRepository.find({ where: { user: user } });
-
             return { user, trainers };
         }));
 
@@ -37,13 +36,10 @@ export class UserService {
     static async createUser(name: string, email: string, password: string): Promise<User> {
         const userRepository: Repository<User> = getRepository(User);
         if (!userRepository) throw new Error('User repository not found');
-    
-        // Check if the email already exists
+
         const existingUser = await userRepository.findOne({ where: { email } });
-        if (existingUser) {
-            throw new Error('Email address already in use');
-        }
-    
+        if (existingUser) throw new Error('Email address already in use');
+
         const user = new User();
         user.name = name;
         user.email = email;
@@ -51,20 +47,24 @@ export class UserService {
         return await userRepository.save(user);
     }
 
+    // ← role added to both tokens
     static async login(email: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
         const userRepository = getRepository(User);
         const user = await userRepository.findOne({ where: { email } });
 
-        if (!user) {
-            throw new Error('Invalid credentials');
-        }
+        if (!user) throw new Error('Invalid credentials');
+
         if (await bcrypt.compare(password, user.password)) {
-            // Generating access token during login
-            const accessToken = jwt.sign({ userId: user.id }, accessSecret, { expiresIn: accessTtl });
-
-            // Generating refresh token during login
-            const refreshToken = jwt.sign({ userId: user.id }, refreshSecret, { expiresIn: refreshTtl });
-
+            const accessToken = jwt.sign(
+                { userId: user.id, role: user.role },  // ← added role
+                accessSecret,
+                { expiresIn: accessTtl }
+            );
+            const refreshToken = jwt.sign(
+                { userId: user.id, role: user.role },  // ← added role
+                refreshSecret,
+                { expiresIn: refreshTtl }
+            );
             return { accessToken, refreshToken };
         }
         throw new Error('BAD CREDENTIALS');
@@ -73,17 +73,24 @@ export class UserService {
     static async getUserById(id: string): Promise<User | undefined> {
         const userRepository = getRepository(User);
         const user = await userRepository.findOne({ where: { id: Number(id) } });
-
         return user || undefined;
     }
 
     static async getSelectedTrainersForUser(userId: number): Promise<User_Trainer[]> {
         const userTrainerRepository: Repository<User_Trainer> = getRepository(User_Trainer);
         if (!userTrainerRepository) throw new Error('User_Trainer repository not found');
-
-        const selectedTrainers = await userTrainerRepository.find({ where: { user: { id: userId } }});
-
-        return selectedTrainers;
+        return await userTrainerRepository.find({ where: { user: { id: userId } } });
     }
 
+    // ← new method
+    static async deleteUser(id: number): Promise<void> {
+        try {
+            const userRepository = getRepository(User);
+            const user = await userRepository.findOne({ where: { id } });
+            if (!user) throw new Error('User not found');
+            await userRepository.remove(user);
+        } catch (error) {
+            throw new Error(`Error in deleteUser: ${error.message}`);
+        }
+    }
 }

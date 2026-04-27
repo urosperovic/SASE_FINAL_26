@@ -80,5 +80,43 @@ router.post('/unpick', async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Failed to unselect trainer', error: error.message });
     }
 });
+// ─── Admin routes ─────────────────────────────────────────
+const authMiddleware = (req: Request, res: Response, next: Function) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET) as { userId: string, role: string };
+        req['user'] = decoded;
+        next();
+    } catch {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+};
+
+const adminMiddleware = (req: Request, res: Response, next: Function) => {
+    if (req['user']?.role !== 'admin') {
+        return res.status(403).json({ message: 'Admin access required' });
+    }
+    next();
+};
+
+router.put('/admin/:id', authMiddleware, adminMiddleware, async (req: Request, res: Response) => {
+    try {
+        const { name, email, speciality, timeSlots } = req.body;
+        const trainer = await TrainerService.updateTrainer(parseInt(req.params.id), name, email, speciality, timeSlots);
+        return res.status(200).json(trainer);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update trainer', error: error.message });
+    }
+});
+
+router.delete('/admin/:id', authMiddleware, adminMiddleware, async (req: Request, res: Response) => {
+    try {
+        await TrainerService.deleteTrainer(parseInt(req.params.id));
+        return res.status(200).json({ message: 'Trainer deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete trainer', error: error.message });
+    }
+});
 
 export default router;

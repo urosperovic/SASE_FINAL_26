@@ -120,5 +120,45 @@ export class TrainerService {
         return timeSlot;
     }
 
+    static async updateTrainer(
+    id: number,
+    name?: string,
+    email?: string,
+    speciality?: string,
+    timeSlots?: string[]
+): Promise<Trainer> {
+    try {
+        const trainerRepository = getRepository(Trainer);
+        const trainer = await trainerRepository.findOne({ where: { id }, relations: ['timeSlots'] });
+        if (!trainer) throw new Error('Trainer not found');
+
+        if (name) trainer.name = name;
+        if (email) trainer.email = email;
+        if (speciality) trainer.speciality = speciality;
+        if (timeSlots) {
+            trainer.timeSlots = timeSlots.map(slot => {
+                const timeSlot = new TimeSlot();
+                timeSlot.slot = slot;
+                return timeSlot;
+            });
+        }
+
+        return await trainerRepository.save(trainer);
+    } catch (error) {
+        throw new Error(`Error in updateTrainer: ${error.message}`);
+    }
+}
+
+  static async deleteTrainer(id: number): Promise<void> {
+      try {
+          const trainerRepository = getRepository(Trainer);
+          const trainer = await trainerRepository.findOne({ where: { id } });
+        if (!trainer) throw new Error('Trainer not found');
+
+        await trainerRepository.remove(trainer);
+    } catch (error) {
+        throw new Error(`Error in deleteTrainer: ${error.message}`);
+    }
+  }
     
 }

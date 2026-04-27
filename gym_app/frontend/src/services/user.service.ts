@@ -2,7 +2,7 @@ import { SessionManager } from "@/utils/session.manager";
 import axios, {AxiosError, type AxiosResponse} from "axios";
 
 const client = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'https://localhost:3000/api',
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'

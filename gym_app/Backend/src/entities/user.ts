@@ -2,6 +2,11 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from "t
 import { Trainer } from "./trainer";
 import { User_Trainer } from "./user_trainer";
 
+export enum UserRole {
+    ADMIN = 'admin',
+    USER = 'user'
+}
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -15,6 +20,13 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER
+  })
+  role: UserRole;
 
   @ManyToMany(() => Trainer, (trainer) => trainer.user)
   trainer: Trainer[];
