@@ -1,4 +1,3 @@
-
 <template>
   <div class="container mt-4">
     <h2 class="mb-4">Admin Panel</h2>
@@ -19,13 +18,23 @@
       <table class="table table-bordered table-hover">
         <thead class="table-dark">
           <tr>
+            <th>ID</th>
             <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="user in users" :key="user.id">
-            <td>{{ user }}</td>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="badge" :class="user.role === 'admin' ? 'bg-danger' : 'bg-secondary'">
+                {{ user.role }}
+              </span>
+            </td>
             <td>
               <button class="btn btn-sm btn-danger" @click="deleteUser(user.id)">Delete</button>
             </td>
@@ -83,7 +92,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { SessionManager } from '@/utils/session.manager' 
+import { SessionManager } from '@/utils/session.manager'
 
 const tab = ref('users')
 const users = ref([])
@@ -95,7 +104,11 @@ const authHeader = { headers: { Authorization: `Bearer ${token}` } }
 
 const fetchUsers = async () => {
   const res = await axios.get('https://localhost:3000/api/users', authHeader)
-  users.value = res.data
+  // API returns { user, trainers }[] — unwrap to flat user objects
+  users.value = res.data.map((entry: any) => ({
+    ...entry.user,
+    trainers: entry.trainers
+  }))
 }
 
 const fetchTrainers = async () => {
