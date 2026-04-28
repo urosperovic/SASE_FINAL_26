@@ -30,4 +30,5 @@ npm run dev
 
 ```sh
 npm run build
-```
+``` SheetJS
+npm install xlsx

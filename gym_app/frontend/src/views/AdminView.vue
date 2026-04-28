@@ -16,7 +16,13 @@
 
       <!-- Users -->
       <div v-if="tab === 'users'">
-        <h2 class="table-heading">All Users</h2>
+        <div class="table-top">
+          <h2 class="table-heading">All Users</h2>
+          <div class="btn-group-right">
+            <button class="btn-export" @click="exportUsers">⬇ Users</button>
+            <button class="btn-export" @click="exportBookings">⬇ Bookings</button>
+          </div>
+        </div>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
@@ -41,9 +47,12 @@
       <div v-if="tab === 'trainers'">
         <div class="table-top">
           <h2 class="table-heading">All Trainers</h2>
-          <button class="btn-add" @click="showAddForm = !showAddForm">
-            {{ showAddForm ? '✕ Cancel' : '+ Add Trainer' }}
-          </button>
+          <div class="btn-group-right">
+            <button class="btn-export" @click="exportTrainers">⬇ Trainers</button>
+            <button class="btn-add" @click="showAddForm = !showAddForm">
+              {{ showAddForm ? '✕ Cancel' : '+ Add Trainer' }}
+            </button>
+          </div>
         </div>
 
         <!-- Add Form -->
@@ -117,6 +126,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import * as XLSX from 'xlsx'
 import { SessionManager } from '@/utils/session.manager'
 
 const tab = ref('users')
@@ -133,6 +143,9 @@ const newTrainer = ref({ name: '', email: '', password: '', speciality: '', bio:
 const token = SessionManager.getAccessToken()
 const authHeader = { headers: { Authorization: `Bearer ${token}` } }
 
+const today = () => new Date().toISOString().split('T')[0]
+
+// ─── Fetch ────────────────────────────────────────────────
 const fetchUsers = async () => {
   const res = await axios.get('https://localhost:3000/api/users', authHeader)
   users.value = res.data.map((e: any) => ({ ...e.user, trainers: e.trainers }))
@@ -143,6 +156,64 @@ const fetchTrainers = async () => {
   trainers.value = res.data
 }
 
+// ─── Export ───────────────────────────────────────────────
+const exportUsers = () => {
+  const data = users.value.map((u: any) => ({
+    ID: u.id,
+    Name: u.name,
+    Email: u.email,
+    Role: u.role
+  }))
+  const ws = XLSX.utils.json_to_sheet(data)
+  ws['!cols'] = [{ wch: 6 }, { wch: 20 }, { wch: 30 }, { wch: 10 }]
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Users')
+  XLSX.writeFile(wb, `ironforge_users_${today()}.xlsx`)
+}
+
+const exportTrainers = () => {
+  const data = trainers.value.map((t: any) => ({
+    ID: t.id,
+    Name: t.name,
+    Email: t.email,
+    Speciality: t.speciality,
+    Bio: t.bio || '',
+    'Time Slots': t.timeSlots?.map((s: any) => s.slot).join(', ') || ''
+  }))
+  const ws = XLSX.utils.json_to_sheet(data)
+  ws['!cols'] = [{ wch: 6 }, { wch: 20 }, { wch: 30 }, { wch: 20 }, { wch: 40 }, { wch: 40 }]
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Trainers')
+  XLSX.writeFile(wb, `ironforge_trainers_${today()}.xlsx`)
+}
+
+const exportBookings = () => {
+  const data: any[] = []
+  users.value.forEach((u: any) => {
+    if (u.trainers?.length > 0) {
+      u.trainers.forEach((b: any) => {
+        data.push({
+          'User ID': u.id,
+          'User Name': u.name,
+          'User Email': u.email,
+          'Trainer ID': b.trainer_id,
+          'Time Slot ID': b.timeSlot_id
+        })
+      })
+    }
+  })
+  if (data.length === 0) {
+    alert('No bookings found to export.')
+    return
+  }
+  const ws = XLSX.utils.json_to_sheet(data)
+  ws['!cols'] = [{ wch: 8 }, { wch: 20 }, { wch: 30 }, { wch: 10 }, { wch: 12 }]
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Bookings')
+  XLSX.writeFile(wb, `ironforge_bookings_${today()}.xlsx`)
+}
+
+// ─── CRUD ─────────────────────────────────────────────────
 const addTrainer = async () => {
   addError.value = ''
   if (!newTrainer.value.name || !newTrainer.value.email || !newTrainer.value.password || !newTrainer.value.speciality) {
@@ -200,39 +271,35 @@ onMounted(() => { fetchUsers(); fetchTrainers() })
 
 .admin-page { min-height: 100vh; background: #0f0f0f; font-family: 'DM Sans', sans-serif; color: #fff; }
 
-.admin-header {
-  background: #111;
-  border-bottom: 1px solid #222;
-  padding: 2rem 3rem;
-}
+.admin-header { background: #111; border-bottom: 1px solid #222; padding: 2rem 3rem; }
 .admin-eyebrow { color: #e8ff00; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin: 0 0 0.25rem; }
 .admin-title { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 900; margin: 0; }
 
 .admin-body { padding: 2rem 3rem; }
 
-.admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid #222; padding-bottom: 0; }
-.tab-btn {
-  background: none; border: none; color: #555;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1.1rem; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; padding: 0.75rem 1.5rem;
-  cursor: pointer; border-bottom: 2px solid transparent;
-  transition: all 0.2s; margin-bottom: -1px;
-}
+.admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid #222; }
+.tab-btn { background: none; border: none; color: #555; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; margin-bottom: -1px; }
 .tab-btn.active { color: #e8ff00; border-bottom-color: #e8ff00; }
 .tab-btn:hover { color: #fff; }
 
 .table-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-.table-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 1.25rem; color: #fff; }
+.table-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0; color: #fff; }
 
-.btn-add {
-  background: #e8ff00; color: #0a0a0a;
-  border: none; padding: 0.6rem 1.25rem;
+.btn-group-right { display: flex; gap: 0.5rem; align-items: center; }
+
+.btn-export {
+  background: #1a1a1a;
+  border: 1px solid #e8ff00;
+  color: #e8ff00;
+  padding: 0.6rem 1.1rem;
   border-radius: 6px;
   font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700; font-size: 0.95rem; letter-spacing: 1px;
-  cursor: pointer; transition: opacity 0.2s;
+  font-weight: 700; font-size: 0.9rem; letter-spacing: 1px;
+  cursor: pointer; transition: background 0.2s;
 }
+.btn-export:hover { background: rgba(232,255,0,0.1); }
+
+.btn-add { background: #e8ff00; color: #0a0a0a; border: none; padding: 0.6rem 1.25rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 1px; cursor: pointer; transition: opacity 0.2s; }
 .btn-add:hover { opacity: 0.85; }
 
 .admin-table-wrap { border-radius: 10px; overflow: hidden; border: 1px solid #222; margin-bottom: 1.5rem; }
@@ -264,13 +331,7 @@ onMounted(() => { fetchUsers(); fetchTrainers() })
 .field-group.full { margin-bottom: 1rem; }
 .field-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #555; font-weight: 500; }
 .label-hint { font-size: 0.7rem; color: #444; text-transform: none; letter-spacing: 0; }
-.field-group input, .field-group textarea {
-  background: #1a1a1a; border: 1px solid #2a2a2a; color: #fff;
-  padding: 0.7rem 0.9rem; border-radius: 7px;
-  font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
-  outline: none; transition: border-color 0.2s;
-  resize: vertical;
-}
+.field-group input, .field-group textarea { background: #1a1a1a; border: 1px solid #2a2a2a; color: #fff; padding: 0.7rem 0.9rem; border-radius: 7px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; resize: vertical; }
 .field-group input:focus, .field-group textarea:focus { border-color: #e8ff00; }
 .field-group input::placeholder, .field-group textarea::placeholder { color: #444; }
 
