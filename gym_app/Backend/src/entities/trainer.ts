@@ -6,30 +6,30 @@ import { TimeSlot } from "./time_slot";
 @Entity()
 export class Trainer {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password! : string;
 
   @Column()
-  speciality: string;
+  speciality!: string;
 
   @Column({ type: 'text', nullable: true })
-  bio: string;
+  bio!: string;
 
   @ManyToMany(() => User, (user) => user.trainer)
-  user: User[];
+  user!: User[];
 
   @OneToMany(() => User_Trainer, (user_trainer) => user_trainer.trainer)
-  user_trainers: User_Trainer[];
+  user_trainers!: User_Trainer[];
 
   @OneToMany(() => TimeSlot, (timeSlot) => timeSlot.trainer, { cascade: true })
   @JoinColumn()
-  timeSlots: TimeSlot[];
+  timeSlots!: TimeSlot[];
 }

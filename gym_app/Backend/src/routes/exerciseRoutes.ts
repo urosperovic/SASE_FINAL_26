@@ -27,7 +27,14 @@ router.get('/', async (req: Request, res: Response) => {
         return res.status(200).json(response.data);
     } catch (error) {
         console.error('FULL EXERCISE ERROR:', error);
-        res.status(500).json({ message: 'Failed to fetch exercises', error: error.message });
+        const message = error instanceof Error 
+        ? error.message 
+        : 'Unknown error';
+
+        return res.status(500).json({ 
+            message: 'Failed to fetch exercises',
+            error: message
+        });
     }
 });
 
@@ -41,7 +48,14 @@ router.get('/bodyparts', async (req: Request, res: Response) => {
         });
         return res.status(200).json(response.data);
     } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch body parts', error: error.message });
+        const message = error instanceof Error
+        ? error.message
+        : 'Unknown error';
+
+    return res.status(500).json({
+        message: 'Failed to fetch body parts',
+        error: message
+        });
     }
 });
 

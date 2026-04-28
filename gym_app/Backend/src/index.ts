@@ -19,13 +19,13 @@ import exerciseRoutes from './routes/exerciseRoutes';
 dotenv.config();
 
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientID: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     callbackURL: 'https://localhost:3000/api/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const userRepository = getRepository(User);
-        let user = await userRepository.findOne({ where: { email: profile.emails[0].value } });
+        let user = await userRepository.findOne({ where: { email: profile.emails?.[0]?.value } });
 
         if (!user) {
             // Auto-register if first time
@@ -37,9 +37,12 @@ passport.use(new GoogleStrategy({
             await userRepository.save(user);
         }
 
-        return done(null, user);
-    } catch (err) {
-        return done(err, null);
+        return done(undefined, user);
+    } catch (err: unknown) {
+    return done(
+            err instanceof Error ? err : new Error(String(err)),
+            undefined
+        );
     }
 }));
 

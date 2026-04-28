@@ -33,6 +33,7 @@
     "typeorm": "^0.2.41"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.17",
     "typescript": "^5.4.5"

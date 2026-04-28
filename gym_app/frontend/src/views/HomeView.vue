@@ -448,4 +448,100 @@ export default {
   .section-sidebar { width: 100%; position: static; }
   .hero-heading { font-size: 3.5rem; }
 }
+@media (max-width: 900px) {
+  .home-body {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+  .section-sidebar {
+    width: 100%;
+    position: static;
+  }
+  .hero-heading {
+    font-size: 3.5rem;
+  }
+  .home-hero {
+    padding: 2.5rem 1.5rem 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-hero {
+    padding: 2rem 1.25rem 1.5rem;
+  }
+
+  .hero-heading {
+    font-size: 2.8rem;
+  }
+
+  .hero-desc {
+    font-size: 0.85rem;
+  }
+
+  .home-body {
+    padding: 1.25rem;
+    gap: 1.5rem;
+  }
+
+  .trainers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trainer-card-action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .slot-select {
+    width: 100%;
+  }
+
+  .btn-book,
+  .btn-booked {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+
+  .drawer {
+    max-width: 100%;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .drawer-name {
+    font-size: 1.5rem;
+  }
+
+  .drawer-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .selected-card {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero-heading {
+    font-size: 2.2rem;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+  }
+
+  .nav-btn .btn-label {
+    display: none;
+  }
+
+  .nav-btn {
+    padding: 0.35rem 0.5rem;
+  }
+}
 </style>

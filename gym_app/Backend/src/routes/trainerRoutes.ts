@@ -6,12 +6,20 @@ import { UserRole } from '../entities/user';
 
 const router = Router();
 
+const getErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) return error.message;
+    return String(error);
+};
+
 router.get('/', async (req: Request, res: Response) => {
     try {
         const users = await TrainerService.getAllTrainers();
         return res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({message: 'Failed to fetch trainers', error: error.message});
+        return res.status(500).json({
+        message: 'Failed to fetch trainers',
+        error: getErrorMessage(error)
+    });
     }
 });
 router.post('/' , async (req: Request, res: Response) => {
@@ -20,7 +28,10 @@ router.post('/' , async (req: Request, res: Response) => {
         const user = await TrainerService.getTrainerById(id);
         return res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({message: 'Failed to fetch user', error: error.message});
+        return res.status(500).json({
+        message: 'Failed to fetch users',
+        error: getErrorMessage(error)
+    });
     }
 });
 
@@ -31,7 +42,10 @@ router.post('/timeslot', async (req: Request, res: Response) => {
         const timeSlot = await TrainerService.getTimeSlotById(id);
         return res.status(200).json(timeSlot);
     } catch (error) {
-        res.status(500).json({message: 'Failed to fetch timeslot', error: error.message});
+        return res.status(500).json({
+        message: 'Failed to get timeslot by id passed in body',
+        error: getErrorMessage(error)
+    });
     }
 });
 
@@ -42,7 +56,10 @@ router.post('/signup', async (req: Request, res: Response) => {
         const user = await TrainerService.createTrainer(name, email, password, speciality, timeSlots); // Pass timeSlots to createTrainer
         return res.status(201).json(user);
     } catch (error) {
-        res.status(500).json({ message: 'Failed to create user', error: error.message });
+        return res.status(500).json({
+        message: 'Failed to create user',
+        error: getErrorMessage(error)
+    });
     }
 });
 
@@ -60,7 +77,10 @@ router.post('/pick', async (req: Request, res: Response) => {
         const assign = await TrainerService.pickTrainer(trainerId,timeSlotId, user);
         return res.status(201).json(assign);
     } catch (error) {
-        res.status(500).json({message: 'Failed to assign user', error: error.message});
+        return res.status(500).json({
+        message: 'Failed to assign user',
+        error: getErrorMessage(error)
+    });
     }
 });
 
@@ -78,7 +98,10 @@ router.post('/unpick', async (req: Request, res: Response) => {
         
         return res.status(200).json({ message: 'Trainer unselected successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to unselect trainer', error: error.message });
+        return res.status(500).json({
+        message: 'Failed to unselect trainer',
+        error: getErrorMessage(error)
+    });
     }
 });
 // ─── Admin routes ─────────────────────────────────────────
@@ -112,7 +135,10 @@ router.put('/admin/:id', authMiddleware, adminMiddleware, async (req: Request, r
         const trainer = await TrainerService.updateTrainer(parseInt(req.params.id), name, email, speciality, bio, timeSlots);
         return res.status(200).json(trainer);
     } catch (error) {
-        res.status(500).json({ message: 'Failed to update trainer', error: error.message });
+        return res.status(500).json({
+        message: 'Failed to update trainer',
+        error: getErrorMessage(error)
+    });
     }
 });
 
@@ -121,7 +147,14 @@ router.delete('/admin/:id', authMiddleware, adminMiddleware, async (req: Request
         await TrainerService.deleteTrainer(parseInt(req.params.id));
         return res.status(200).json({ message: 'Trainer deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to delete trainer', error: error.message });
+        const message = error instanceof Error
+            ? error.message
+            : String(error);
+
+        return res.status(500).json({
+            message: 'Failed to delete trainer',
+            error: message
+        });
     }
 });
 

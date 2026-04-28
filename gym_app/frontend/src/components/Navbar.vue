@@ -148,4 +148,41 @@ const isAuthenticated = computed(() => {
   border-color: #ff4444;
   color: #ff4444;
 }
+@media (max-width: 768px) {
+  .navbar-inner {
+    padding: 0 1.25rem;
+    height: 56px;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .nav-btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    letter-spacing: 1px;
+  }
+
+  .navbar-actions {
+    gap: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-name {
+    display: none;
+  }
+
+  .nav-btn {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.55rem;
+  }
+}
 </style>

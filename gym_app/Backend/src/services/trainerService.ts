@@ -16,6 +16,10 @@ const refreshSecret = process.env.JWT_REFRESH_SECRET || '';
 const refreshTtl = process.env.JWT_REFRESH_TTL || '';
 const saltRounds = 10;
 
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
 
 export class TrainerService {
     static async getAllTrainers(): Promise<Trainer[]> {
@@ -30,7 +34,7 @@ export class TrainerService {
             
             return trainers;
         } catch (error) {
-            throw new Error(`Error in getAllTrainers: ${error.message}`);
+            throw new Error(`Error in getAllTrainers: ${getErrorMessage(error)}`);
         }
     }
 
@@ -65,7 +69,7 @@ export class TrainerService {
           // Save the trainer entity with associated time slots
           return await trainerRepository.save(trainer);
         } catch (error) {
-          throw new Error(`Error in createTrainer: ${error.message}`);
+          throw new Error(`Error in createTrainer: ${getErrorMessage(error)}`);
         }
       }
       
