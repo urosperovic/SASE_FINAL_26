@@ -8,7 +8,103 @@
     </div>
 
     <div class="admin-body">
-      <!-- Tabs -->
+
+      <!-- ─── Stats Dashboard ─────────────────────────── -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ users.length }}</span>
+            <span class="stat-label">Total Users</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" :style="{ width: '100%' }"></div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🏋️</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ trainers.length }}</span>
+            <span class="stat-label">Total Trainers</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" :style="{ width: '100%' }"></div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ totalBookings }}</span>
+            <span class="stat-label">Total Bookings</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" :style="{ width: '100%' }"></div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ mostBookedTrainer?.name || '—' }}</span>
+            <span class="stat-label">Most Booked Trainer</span>
+          </div>
+          <div class="stat-sub" v-if="mostBookedTrainer">
+            {{ mostBookedTrainer.bookings }} booking{{ mostBookedTrainer.bookings !== 1 ? 's' : '' }}
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🔑</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ adminCount }}</span>
+            <span class="stat-label">Admin Users</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill accent-red" :style="{ width: adminCount > 0 ? '100%' : '0%' }"></div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🕐</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ totalTimeSlots }}</span>
+            <span class="stat-label">Total Time Slots</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" :style="{ width: '100%' }"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Trainers -->
+      <div class="top-trainers" v-if="trainerBookingRanking.length > 0">
+        <h3 class="section-label">Trainer Booking Ranking</h3>
+        <div class="ranking-list">
+          <div v-for="(t, i) in trainerBookingRanking" :key="t.id" class="ranking-row">
+            <span class="rank-num" :class="i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''">
+              #{{ i + 1 }}
+            </span>
+            <div class="rank-avatar">{{ t.name.charAt(0) }}</div>
+            <div class="rank-info">
+              <span class="rank-name">{{ t.name }}</span>
+              <span class="rank-spec">{{ t.speciality }}</span>
+            </div>
+            <div class="rank-bar-wrap">
+              <div class="rank-bar">
+                <div
+                  class="rank-bar-fill"
+                  :style="{ width: trainerBookingRanking[0].bookings > 0 ? (t.bookings / trainerBookingRanking[0].bookings * 100) + '%' : '0%' }"
+                ></div>
+              </div>
+              <span class="rank-count">{{ t.bookings }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Tabs ────────────────────────────────────── -->
       <div class="admin-tabs">
         <button :class="['tab-btn', { active: tab === 'users' }]" @click="tab = 'users'">Users</button>
         <button :class="['tab-btn', { active: tab === 'trainers' }]" @click="tab = 'trainers'">Trainers</button>
@@ -26,9 +122,7 @@
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
-              <tr>
-                <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th>
-              </tr>
+              <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
             </thead>
             <tbody>
               <tr v-for="user in users" :key="user.id">
@@ -124,7 +218,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import * as XLSX from 'xlsx'
 import { SessionManager } from '@/utils/session.manager'
@@ -145,6 +239,32 @@ const authHeader = { headers: { Authorization: `Bearer ${token}` } }
 
 const today = () => new Date().toISOString().split('T')[0]
 
+// ─── Stats ────────────────────────────────────────────────
+const totalBookings = computed(() =>
+  users.value.reduce((sum: number, u: any) => sum + (u.trainers?.length || 0), 0)
+)
+
+const adminCount = computed(() =>
+  users.value.filter((u: any) => u.role === 'admin').length
+)
+
+const totalTimeSlots = computed(() =>
+  trainers.value.reduce((sum: number, t: any) => sum + (t.timeSlots?.length || 0), 0)
+)
+
+const trainerBookingRanking = computed(() => {
+  return trainers.value.map((t: any) => {
+    const bookings = users.value.reduce((sum: number, u: any) => {
+      return sum + (u.trainers?.filter((b: any) => b.trainer_id === t.id).length || 0)
+    }, 0)
+    return { ...t, bookings }
+  }).sort((a: any, b: any) => b.bookings - a.bookings)
+})
+
+const mostBookedTrainer = computed(() =>
+  trainerBookingRanking.value.length > 0 ? trainerBookingRanking.value[0] : null
+)
+
 // ─── Fetch ────────────────────────────────────────────────
 const fetchUsers = async () => {
   const res = await axios.get('https://localhost:3000/api/users', authHeader)
@@ -158,12 +278,7 @@ const fetchTrainers = async () => {
 
 // ─── Export ───────────────────────────────────────────────
 const exportUsers = () => {
-  const data = users.value.map((u: any) => ({
-    ID: u.id,
-    Name: u.name,
-    Email: u.email,
-    Role: u.role
-  }))
+  const data = users.value.map((u: any) => ({ ID: u.id, Name: u.name, Email: u.email, Role: u.role }))
   const ws = XLSX.utils.json_to_sheet(data)
   ws['!cols'] = [{ wch: 6 }, { wch: 20 }, { wch: 30 }, { wch: 10 }]
   const wb = XLSX.utils.book_new()
@@ -173,12 +288,8 @@ const exportUsers = () => {
 
 const exportTrainers = () => {
   const data = trainers.value.map((t: any) => ({
-    ID: t.id,
-    Name: t.name,
-    Email: t.email,
-    Speciality: t.speciality,
-    Bio: t.bio || '',
-    'Time Slots': t.timeSlots?.map((s: any) => s.slot).join(', ') || ''
+    ID: t.id, Name: t.name, Email: t.email, Speciality: t.speciality,
+    Bio: t.bio || '', 'Time Slots': t.timeSlots?.map((s: any) => s.slot).join(', ') || ''
   }))
   const ws = XLSX.utils.json_to_sheet(data)
   ws['!cols'] = [{ wch: 6 }, { wch: 20 }, { wch: 30 }, { wch: 20 }, { wch: 40 }, { wch: 40 }]
@@ -192,20 +303,11 @@ const exportBookings = () => {
   users.value.forEach((u: any) => {
     if (u.trainers?.length > 0) {
       u.trainers.forEach((b: any) => {
-        data.push({
-          'User ID': u.id,
-          'User Name': u.name,
-          'User Email': u.email,
-          'Trainer ID': b.trainer_id,
-          'Time Slot ID': b.timeSlot_id
-        })
+        data.push({ 'User ID': u.id, 'User Name': u.name, 'User Email': u.email, 'Trainer ID': b.trainer_id, 'Time Slot ID': b.timeSlot_id })
       })
     }
   })
-  if (data.length === 0) {
-    alert('No bookings found to export.')
-    return
-  }
+  if (data.length === 0) { alert('No bookings found to export.'); return }
   const ws = XLSX.utils.json_to_sheet(data)
   ws['!cols'] = [{ wch: 8 }, { wch: 20 }, { wch: 30 }, { wch: 10 }, { wch: 12 }]
   const wb = XLSX.utils.book_new()
@@ -277,6 +379,97 @@ onMounted(() => { fetchUsers(); fetchTrainers() })
 
 .admin-body { padding: 2rem 3rem; }
 
+/* ─── Stats ─────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: #333; }
+
+.stat-icon { font-size: 1.5rem; }
+
+.stat-info { display: flex; flex-direction: column; }
+.stat-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.2rem; font-weight: 900;
+  color: #e8ff00; line-height: 1;
+}
+.stat-label { font-size: 0.75rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.2rem; }
+.stat-sub { font-size: 0.75rem; color: #444; }
+
+.stat-bar { height: 3px; background: #1e1e1e; border-radius: 2px; margin-top: 0.5rem; }
+.stat-bar-fill { height: 100%; background: #e8ff00; border-radius: 2px; transition: width 0.6s ease; }
+.stat-bar-fill.accent-red { background: #ff4444; }
+
+/* ─── Ranking ───────────────────────────────────────────── */
+.top-trainers {
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.section-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.8rem; letter-spacing: 2px;
+  text-transform: uppercase; color: #555;
+  margin: 0 0 1.25rem;
+}
+
+.ranking-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.ranking-row {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem; border-radius: 8px;
+  background: #111; border: 1px solid #1e1e1e;
+  transition: border-color 0.2s;
+}
+.ranking-row:hover { border-color: #2a2a2a; }
+
+.rank-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.1rem; font-weight: 900;
+  color: #444; width: 28px; text-align: center;
+}
+.rank-num.gold { color: #ffd700; }
+.rank-num.silver { color: #c0c0c0; }
+.rank-num.bronze { color: #cd7f32; }
+
+.rank-avatar {
+  width: 36px; height: 36px;
+  background: #e8ff00; color: #0a0a0a;
+  border-radius: 50%; display: flex;
+  align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem; font-weight: 900; flex-shrink: 0;
+}
+
+.rank-info { display: flex; flex-direction: column; min-width: 140px; }
+.rank-name { font-size: 0.9rem; font-weight: 600; color: #fff; }
+.rank-spec { font-size: 0.75rem; color: #555; }
+
+.rank-bar-wrap { flex: 1; display: flex; align-items: center; gap: 0.75rem; }
+.rank-bar { flex: 1; height: 4px; background: #1e1e1e; border-radius: 2px; }
+.rank-bar-fill { height: 100%; background: #e8ff00; border-radius: 2px; transition: width 0.6s ease; }
+.rank-count { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; color: #e8ff00; width: 24px; text-align: right; }
+
+/* ─── Tabs ──────────────────────────────────────────────── */
 .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid #222; }
 .tab-btn { background: none; border: none; color: #555; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; margin-bottom: -1px; }
 .tab-btn.active { color: #e8ff00; border-bottom-color: #e8ff00; }
@@ -284,19 +477,9 @@ onMounted(() => { fetchUsers(); fetchTrainers() })
 
 .table-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
 .table-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0; color: #fff; }
-
 .btn-group-right { display: flex; gap: 0.5rem; align-items: center; }
 
-.btn-export {
-  background: #1a1a1a;
-  border: 1px solid #e8ff00;
-  color: #e8ff00;
-  padding: 0.6rem 1.1rem;
-  border-radius: 6px;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700; font-size: 0.9rem; letter-spacing: 1px;
-  cursor: pointer; transition: background 0.2s;
-}
+.btn-export { background: #1a1a1a; border: 1px solid #e8ff00; color: #e8ff00; padding: 0.6rem 1.1rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; cursor: pointer; transition: background 0.2s; }
 .btn-export:hover { background: rgba(232,255,0,0.1); }
 
 .btn-add { background: #e8ff00; color: #0a0a0a; border: none; padding: 0.6rem 1.25rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 1px; cursor: pointer; transition: opacity 0.2s; }
@@ -326,7 +509,6 @@ onMounted(() => { fetchUsers(); fetchTrainers() })
 .form-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 1.25rem; color: #fff; }
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-
 .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
 .field-group.full { margin-bottom: 1rem; }
 .field-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #555; font-weight: 500; }
@@ -343,4 +525,12 @@ onMounted(() => { fetchUsers(); fetchTrainers() })
 .btn-cancel:hover { background: #2a2a2a; color: #fff; }
 
 .error-msg { background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.3); color: #ff4444; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-top: 0.75rem; }
+
+@media (max-width: 900px) {
+  .admin-body { padding: 1.5rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}
 </style>
