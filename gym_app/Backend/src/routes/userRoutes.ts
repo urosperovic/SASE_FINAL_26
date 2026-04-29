@@ -143,5 +143,15 @@ router.delete('/admin/users/:id', authMiddleware, adminMiddleware, async (req: R
     }
 });
 
-
+// GET /users/me
+router.get('/me', authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const userId = (req['user'] as { userId: string }).userId;
+        const data = await UserService.getMyProfile(userId);
+        return res.status(200).json(data);
+    } catch (error) {
+        return res.status(500).json({ message: 'Failed to fetch profile', error: getErrorMessage(error) });
+    }
+});
+// ─── profile routes ─────────────────────────────────────────
 export default router;

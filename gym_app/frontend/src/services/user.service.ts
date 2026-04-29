@@ -117,5 +117,8 @@ export class UserService {
 
         return rsp;
     }
+    static async getMyProfile() {
+        return this.useAxios('/users/me');
+    }
     
 }

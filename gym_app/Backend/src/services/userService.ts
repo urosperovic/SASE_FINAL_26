@@ -113,4 +113,10 @@ export class UserService {
         throw new Error(`Error in deleteUser: ${getErrorMessage(error)}`);
     }
 }
+static async getMyProfile(userId: string): Promise<{ user: User}> {
+    const userRepository = getRepository(User);
+    const user = await userRepository.findOne({ where: { id: Number(userId) } });
+    if (!user) throw new Error('User not found');
+    return { user };
+}
 }   
