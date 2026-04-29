@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 29, 2026 at 03:35 AM
+-- Generation Time: Apr 29, 2026 at 11:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -273,10 +273,18 @@ INSERT INTO `time_slot` (`id`, `slot`, `trainerId`) VALUES
 (428, 'Wednesday 4:00 PM', 525),
 (429, 'Friday 9:00 AM', 525),
 (430, 'Sunday 6:00 PM', 525),
-(431, 'Monday 11:00 AM', 526),
-(432, 'Wednesday 6:00 PM', 526),
-(433, 'Friday 7:00 AM', 526),
-(434, 'Sunday 6:00 PM', 526);
+(431, 'Monday 11:00 AM', NULL),
+(432, 'Wednesday 6:00 PM', NULL),
+(433, 'Friday 7:00 AM', NULL),
+(434, 'Sunday 6:00 PM', NULL),
+(435, 'Monday 11:00 AM', NULL),
+(436, 'Wednesday 6:00 PM', NULL),
+(437, 'Friday 7:00 AM', NULL),
+(438, 'Sunday 6:00 PM', NULL),
+(439, 'Monday 11:00 AM', 526),
+(440, 'Wednesday 6:00 PM', 526),
+(441, 'Friday 7:00 AM', 526),
+(442, 'Sunday 6:00 PM', 526);
 
 -- --------------------------------------------------------
 
@@ -363,14 +371,14 @@ INSERT INTO `user` (`id`, `name`, `email`, `password`, `role`) VALUES
 (20, 'Daniel', 'daniel@example.com', '$2b$10$aMt4vL79NG6vyfPHOL6Lq.kM7XY0R1RJ0sE9XNOFVb6o4A.yVKkM.', 'user'),
 (21, 'Jessica', 'jessica@example.com', '$2b$10$4btjxvhJXVeq7LHUCxRYCugLeBa8dVsRnnjpy37jyvAy8ln9JkZ6W', 'user'),
 (25, 'Jelena', '1@1', '$2b$10$tfPlw5Ngq3RUntbbMCVnCuozUQyHW2d3sayuCtCUCw1/FLqU4RB6m', 'user'),
-(26, 'Jelena', '1@12', '$2b$10$gTW/EMm./wYjKBFQpPfZOudc1h8GDyYAEJTuSjFWLjKkbKqOOoM16', 'user'),
 (27, 'Jelena', '1@14', '$2b$10$CGD5zqvKjFWQGEqi1vKAa.3sLaoawWa9dY/t5kE39tVNfm37rrUTa', 'user'),
 (30, 'uros', '1@5', '$2b$10$PGOS5RLaV6fP5AfFH1IUmuPdsTmhs5K.t5tAIbxJCo2FzLtcTu3K.', 'user'),
 (32, 'uros', 'uros123l@gmail.com', '$2b$10$ZLU3CGXte8jqKCIP2EC51.4hkyjsBPCWrughyoZNtPtHgMWbqFU0q', 'user'),
 (33, 'uros1', 'uros1@gmail.com', '$2b$10$BnyNeZk3OO8eUUX446nYrOfoOaxi1HDjoXE0y6EIhqMpwEuaSleLW', 'user'),
 (35, 'admin', 'admin@gmail.com', '$2b$10$wPun5vPvcN7JhbdySUnmHOl1/xWaAnRoMxacuggD7NxVRk4Jf0vgi', 'admin'),
 (36, 'Uros Perovic', 'urosveliki03@gmail.com', '', 'user'),
-(37, 'uros', 'UROS@gmail.com', '$2b$10$7gj/lK4uaJrq04a8XBypuemeuQOj8wtXvvnO9MMVDr3gvbx63q482', 'user');
+(37, 'uros', 'UROS@gmail.com', '$2b$10$7gj/lK4uaJrq04a8XBypuemeuQOj8wtXvvnO9MMVDr3gvbx63q482', 'user'),
+(38, 'Person', 'person@gmail.com', '$2b$10$8kjtC0mwjiCZTH1FrGR6Eu9fEeORRfPAellGjUTOZtHxBuW3hJAMi', 'user');
 
 -- --------------------------------------------------------
 
@@ -406,7 +414,12 @@ INSERT INTO `user_trainer` (`user_id`, `trainer_id`, `timeSlot_id`) VALUES
 (36, 59, 266),
 (36, 60, 273),
 (36, 61, 279),
-(36, 63, 290);
+(36, 63, 290),
+(37, 45, 121),
+(38, 44, 120),
+(38, 49, 164),
+(38, 51, 139),
+(38, 52, 221);
 
 --
 -- Indexes for dumped tables
@@ -447,7 +460,7 @@ ALTER TABLE `user_trainer`
 -- AUTO_INCREMENT for table `time_slot`
 --
 ALTER TABLE `time_slot`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=435;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=443;
 
 --
 -- AUTO_INCREMENT for table `trainer`
@@ -459,7 +472,7 @@ ALTER TABLE `trainer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Constraints for dumped tables

@@ -30,7 +30,8 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.2.41"
+    "typeorm": "^0.2.41",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
