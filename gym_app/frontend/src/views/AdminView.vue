@@ -223,10 +223,27 @@ import axios from 'axios'
 import * as XLSX from 'xlsx'
 import { SessionManager } from '@/utils/session.manager'
 
+type User = {
+  id: number
+  name: string
+  email: string
+  role: string
+  trainers?: any[]
+}
+
+type Trainer = {
+  id: number
+  name: string
+  email: string
+  speciality: string
+  bio?: string
+  timeSlots?: any[]
+}
+
 const tab = ref('users')
-const users = ref([])
-const trainers = ref([])
-const editingTrainer = ref(null)
+const users = ref<User[]>([])
+const trainers = ref<Trainer[]>([])
+const editingTrainer = ref<Trainer | null>(null)
 const editingTrainerSlotsRaw = ref('')
 const showAddForm = ref(false)
 const adding = ref(false)
@@ -359,7 +376,7 @@ const openEdit = (trainer: any) => {
 
 const saveTrainer = async () => {
   const timeSlots = editingTrainerSlotsRaw.value.split('\n').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
-  await axios.put(`https://localhost:3000/api/trainer/admin/${editingTrainer.value.id}`, { ...editingTrainer.value, timeSlots }, authHeader)
+  await axios.put(`https://localhost:3000/api/trainer/admin/${editingTrainer.value!.id}`, { ...editingTrainer.value, timeSlots }, authHeader)
   editingTrainer.value = null
   editingTrainerSlotsRaw.value = ''
   await fetchTrainers()
