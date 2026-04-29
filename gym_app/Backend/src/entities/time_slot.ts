@@ -4,11 +4,11 @@ import { Trainer } from "./trainer";
 @Entity()
 export class TimeSlot {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  slot: string;
+  slot!: string;
 
   @ManyToOne(() => Trainer, (trainer) => trainer.timeSlots)
-  trainer: Trainer;
+  trainer!: Trainer;
 }

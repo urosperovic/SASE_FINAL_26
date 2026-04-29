@@ -10,27 +10,27 @@ export enum UserRole {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column({
     type: 'enum',
     enum: UserRole,
     default: UserRole.USER
   })
-  role: UserRole;
+  role!: UserRole;
 
   @ManyToMany(() => Trainer, (trainer) => trainer.user)
-  trainer: Trainer[];
+  trainer!: Trainer[];
 
   @OneToMany(() => User_Trainer, user_trainer => user_trainer.user)
-  user_trainers: User_Trainer[];
+  user_trainers!: User_Trainer[];
 }

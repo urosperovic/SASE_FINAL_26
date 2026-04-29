@@ -41,6 +41,9 @@ const isAuthenticated = computed(() => {
           <button class="nav-btn btn-accent" @click="$router.push('/selected')">
             <span class="btn-label">My Trainers</span>
           </button>
+          <button class="nav-btn btn-accent" @click="$router.push('/profile')">
+            <span class="btn-label">My Profile</span>
+          </button>
           <button class="nav-btn btn-danger" @click="logout">
             <span class="btn-label">Logout</span>
           </button>

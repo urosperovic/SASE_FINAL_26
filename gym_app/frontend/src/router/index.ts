@@ -27,6 +27,22 @@ const router = createRouter({
       component: () => import('../views/Selected.vue')
     },
     {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/UserProfile.vue'),
+      beforeEnter: (to, from, next) => {
+        const token = SessionManager.getAccessToken(); // ← use SessionManager
+        if (!token) return next('/login');
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          if (payload.role === 'user' || payload.role === 'admin') next();
+          else next('/login');
+        } catch {
+          next('/login');
+        }
+      }
+    },
+    {
       path: '/admin',
       name: 'admin',
       component: () => import('../views/AdminView.vue'),

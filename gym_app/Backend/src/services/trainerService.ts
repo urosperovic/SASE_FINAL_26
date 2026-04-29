@@ -86,8 +86,8 @@ export class TrainerService {
         const user_trainer = new User_Trainer();
         
         user_trainer.user = user;
-        user_trainer.trainer = trainer;
-        user_trainer.timeSlot = timeSlot; 
+        user_trainer.trainer = trainer!;
+        user_trainer.timeSlot = timeSlot!; 
     
         await userTrainerRepository.save(user_trainer);
         
@@ -151,7 +151,7 @@ export class TrainerService {
 
         return await trainerRepository.save(trainer);
     } catch (error) {
-        throw new Error(`Error in updateTrainer: ${error.message}`);
+        throw new Error(`Error in updateTrainer: ${getErrorMessage(error)}`);
     }
 }
 
@@ -190,7 +190,7 @@ export class TrainerService {
             .execute();
             console.log(`Trainer deleted successfully`);
     } catch (error) {
-        throw new Error(`Error in deleteTrainer: ${error.message}`);
+       throw new Error(`Error in deleteTrainer: ${getErrorMessage(error)}`);;
     }
 }
     

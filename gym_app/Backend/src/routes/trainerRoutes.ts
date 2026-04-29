@@ -5,7 +5,14 @@ import { UserService } from '../services/userService';
 import { UserRole } from '../entities/user';
 
 const router = Router();
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET
+const JWT_ACCESS_TTL = process.env.JWT_ACCESS_TTL
+const JWT_REFRESH_TTL = process.env.JWT_REFRESH_TTL
 
+if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET) {
+    throw new Error('JWT secrets are not defined')
+}
 const getErrorMessage = (error: unknown): string => {
     if (error instanceof Error) return error.message;
     return String(error);
@@ -111,7 +118,7 @@ const authMiddleware = (req: Request, res: Response, next: Function) => {
     console.log('TOKEN:', token);     
     if (!token) return res.status(401).json({ message: 'No token provided' });
     try {
-        const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET) as { userId: string, role: string };
+        const decoded = jwt.verify(token, JWT_ACCESS_SECRET) as { userId: string, role: string };
         console.log('Decoded token:', decoded);
         req['user'] = decoded;
         next();

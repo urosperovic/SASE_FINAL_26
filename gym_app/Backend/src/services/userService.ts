@@ -6,6 +6,7 @@ import { Request, Express } from "express";
 import bcrypt from "bcryptjs";
 import { User_Trainer } from "../entities/user_trainer";
 import { Trainer } from "../entities/trainer";
+import { getErrorMessage } from "./trainerService";
 
 dotenv.config();
 
@@ -109,7 +110,7 @@ export class UserService {
 
     } catch (error) {
         console.error('FULL DELETE USER ERROR:', error);
-        throw new Error(`Error in deleteUser: ${error.message}`);
+        throw new Error(`Error in deleteUser: ${getErrorMessage(error)}`);
     }
 }
 }   
