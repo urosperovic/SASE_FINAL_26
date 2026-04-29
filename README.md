@@ -1,5 +1,5 @@
 # 🧠 SASE_FINAL_26 — Security aspects in software engineering  (Final Project 2026)
-This repository contains the final implementation for the **SASE
+This repository contains the final implementation for the **SASE (Security aspects in software engineering)** 2026 project.
 ## 🚀 Overview
 Web app focused for gyms where user can book personalized trainings 
 ### Core Objectives
