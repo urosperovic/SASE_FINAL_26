@@ -20,3 +20,8 @@ Perfected styling
 ## 🛠️ Tech Stack
 Node.js
 Vue
+
+## Install 
+npm install
+npm install xlsx --force
+npm install @types/passport @types/passport-google-oauth20 --save-dev
