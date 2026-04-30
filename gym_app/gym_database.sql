@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 29, 2026 at 11:13 PM
+-- Generation Time: Apr 30, 2026 at 05:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -370,7 +370,6 @@ INSERT INTO `user` (`id`, `name`, `email`, `password`, `role`) VALUES
 (19, 'Jennifer', 'jennifer@example.com', '$2b$10$rLHs4JQroU7jwRjujIsGceDrVv6pJgPdOGr/MpZYbOZX/3oWJbDKq', 'user'),
 (20, 'Daniel', 'daniel@example.com', '$2b$10$aMt4vL79NG6vyfPHOL6Lq.kM7XY0R1RJ0sE9XNOFVb6o4A.yVKkM.', 'user'),
 (21, 'Jessica', 'jessica@example.com', '$2b$10$4btjxvhJXVeq7LHUCxRYCugLeBa8dVsRnnjpy37jyvAy8ln9JkZ6W', 'user'),
-(25, 'Jelena', '1@1', '$2b$10$tfPlw5Ngq3RUntbbMCVnCuozUQyHW2d3sayuCtCUCw1/FLqU4RB6m', 'user'),
 (27, 'Jelena', '1@14', '$2b$10$CGD5zqvKjFWQGEqi1vKAa.3sLaoawWa9dY/t5kE39tVNfm37rrUTa', 'user'),
 (30, 'uros', '1@5', '$2b$10$PGOS5RLaV6fP5AfFH1IUmuPdsTmhs5K.t5tAIbxJCo2FzLtcTu3K.', 'user'),
 (32, 'uros', 'uros123l@gmail.com', '$2b$10$ZLU3CGXte8jqKCIP2EC51.4hkyjsBPCWrughyoZNtPtHgMWbqFU0q', 'user'),
@@ -403,18 +402,17 @@ INSERT INTO `user_trainer` (`user_id`, `trainer_id`, `timeSlot_id`) VALUES
 (12, 46, 125),
 (12, 48, 131),
 (12, 50, 137),
-(25, 43, 116),
-(25, 47, 129),
-(25, 48, 131),
 (33, 43, 115),
+(35, 42, 210),
 (36, 44, 118),
-(36, 49, 135),
+(36, 46, 126),
 (36, 51, 140),
 (36, 56, 246),
 (36, 59, 266),
 (36, 60, 273),
 (36, 61, 279),
 (36, 63, 290),
+(36, 517, 319),
 (37, 45, 121),
 (38, 44, 120),
 (38, 49, 164),
