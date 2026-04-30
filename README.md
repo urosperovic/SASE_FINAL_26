@@ -25,3 +25,5 @@ Vue
 npm install
 npm install xlsx --force
 npm install @types/passport @types/passport-google-oauth20 --save-dev
+
+https://github.com/urosperovic/SASE_FINAL_26/blob/main/screenshots/Screenshot%202026-04-30%20033250.png?raw=true
